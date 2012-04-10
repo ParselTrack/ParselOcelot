@@ -4,13 +4,17 @@ This is a fork of the What.CD tracker Ocelot to rewrite it to use a proper Track
 
 See https://github.com/ParselTrack/Specifications for the latest version of the API spec.
 
-##### Installation
+##### Installation (Debian/Ubuntu)
 
 ```
 ~$ export OCELOT_SRC_DIR="/opt/ParselOcelot"
 ~$ export OCELOT_INSTALL_DIR="/usr/bin"
+~$ sudo apt-get install libboost-system-dev libboost-thread-dev libev-dev
 ~$ git clone git://github.com/ParselTrack/ParselOcelot.git $OCELOT_SRC_DIR
 ~$ cd $OCELOT_SRC_DIR
+~$ cp src/config.cc.template src/config.cc
+~$ editor src/config.cc
+~$ ./waf configure
 ~$ ./waf
 ~$ cp build/src/ocelot $OCELOT_INSTALL_DIR
 ~$ cd -
