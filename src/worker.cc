@@ -76,10 +76,12 @@ std::string Worker::Work(std::string &input, std::string &ip) {
 			action = SCRAPE;
 			pos += 7;
 			break;
+		#ifdef ENABLE_UPDATE
 		case 'u':
 			action = UPDATE;
 			pos += 7;
 			break;
+		#endif // ENABLE_UPDATE
 	}
 	if(action == INVALID) {
 		return this->Error("invalid action");
@@ -154,7 +156,7 @@ std::string Worker::Work(std::string &input, std::string &ip) {
 	}
 	
 	
-	
+	#ifdef ENABLE_UPDATE
 	if(action == UPDATE) {
 		if(passkey == config_->kSitePassword) {
 			return this->Update(params);
@@ -162,6 +164,7 @@ std::string Worker::Work(std::string &input, std::string &ip) {
 			return this->Error("Authentication failure");
 		}
 	}
+	#endif // ENABLE_UPDATE
 	
 	// Either a scrape or an announce
 	
@@ -546,6 +549,8 @@ std::string Worker::Scrape(const std::list<std::string> &infohashes) {
 	return output;
 }
 
+#ifdef ENABLE_UPDATE
+
 //TODO: Restrict to local IPs
 std::string Worker::Update(std::unordered_map<std::string, std::string> &params) {
 	if(params["action"] == "change_passkey") {
@@ -718,6 +723,8 @@ std::string Worker::Update(std::unordered_map<std::string, std::string> &params)
 	}
 	return "success";
 }
+
+#endif // ENABLE_UPDATE
 
 void Worker::ReapPeers() {
 	std::cout << "started reaper" << std::endl;

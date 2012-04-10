@@ -3,3 +3,4 @@ build/
 *.log
 src/config.cc
 .lock*
+.waf*

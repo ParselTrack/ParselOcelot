@@ -22,6 +22,10 @@ static void sig_handler(int sig)
 }
 
 int main() {
+  #ifdef ENABLE_UPDATE
+  std::cout << "WARNING: This version of ParselOcelot was compiled with UPDATE support enabled!" << std::endl;
+  #endif // ENABLE_UPDATE
+
   Config config;
   
   signal(SIGINT, sig_handler);

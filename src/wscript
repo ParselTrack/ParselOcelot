@@ -1,4 +1,10 @@
 def build(ctx):
+    print(ctx.env)
+    ADDITIONAL_DEFINES = []
+
+    if ctx.env.ENABLE_UPDATE:
+        ADDITIONAL_DEFINES.append('ENABLE_UPDATE')
+
     ctx.program(
         source       = 'config.cc events.cc logger.cc misc_functions.cc' +
             ' ocelot.cc schedule.cc site_comm.cc worker.cc',
@@ -6,7 +12,7 @@ def build(ctx):
         features     = [],
 
         includes     = ['.', '/usr/local/include/boost'],
-        defines      = [],
+        defines      = [] + ADDITIONAL_DEFINES,
 
         lib          = ['ev', 'boost_system', 'boost_thread'],
         cxxflags       = [

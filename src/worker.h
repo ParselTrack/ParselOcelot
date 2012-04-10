@@ -20,7 +20,9 @@ class Worker {
     std::string Error(std::string err);
     std::string Announce(Torrent &torrent, User &user, std::unordered_map<std::string, std::string> &params, std::unordered_map<std::string, std::string> &headers, std::string &ip);
     std::string Scrape(const std::list<std::string> &infohashes);
+    #ifdef ENABLE_UPDATE
     std::string Update(std::unordered_map<std::string, std::string> &params);
+    #endif // ENABLE_UPDATE
 
     bool Signal(int sig);
 
