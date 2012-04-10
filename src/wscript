@@ -1,0 +1,27 @@
+def build(ctx):
+    ctx.program(
+        source       = 'config.cc events.cc logger.cc misc_functions.cc' +
+            ' ocelot.cc schedule.cc site_comm.cc worker.cc',
+        target       = 'ocelot',
+        features     = [],
+
+        includes     = ['.', '/usr/local/include/boost'],
+        defines      = [],
+
+        lib          = ['ev', 'boost_system', 'boost_thread'],
+        cxxflags       = [
+            '-march=native',
+            '-O2',
+            '-fomit-frame-pointer',
+            '-fno-ident',
+            '-fvisibility-inlines-hidden',
+            '-fvisibility=hidden',
+            '-Wall',
+            '-Werror',
+            '-std=c++0x',
+            '-iquote',
+            '-Wl,O1',
+            '-Wl,--as-needed',
+        ],
+        dflags       = ['-g'],
+    )
