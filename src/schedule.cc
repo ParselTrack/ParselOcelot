@@ -6,11 +6,11 @@
 #include "site_comm.h"
 
 
-Schedule::Schedule(ConnectionMother *mother, Worker *worker, Config *config, SiteComm *site_comm) : mother_(mother), worker_(worker), config_(config), site_comm_(site_comm) {
+Schedule::Schedule(ConnectionMother *mother, Worker *worker, SiteComm *site_comm) : mother_(mother), worker_(worker), site_comm_(site_comm) {
 	counter_ = 0;
 	last_opened_connections_ = 0;
 	
-	next_reap_peers_ = time(NULL) + config->kReapPeersInterval + 40;
+	next_reap_peers_ = time(NULL) + Config::kReapPeersInterval + 40;
 }
 
 //---------- Schedule - gets called every schedule_interval seconds
@@ -19,7 +19,7 @@ void Schedule::Handle(ev::timer &watcher, int events_flags) {
 	if(counter_ % 20 == 0) {
 		std::cout << "Schedule run #" << counter_ << " - open: " << mother_->open_connections() << ", opened: " 
 		<< mother_->opened_connections() << ", speed: "
-		<< ((mother_->opened_connections()-last_opened_connections_)/config_->kScheduleInterval) << "/s" << std::endl;
+		<< ((mother_->opened_connections()-last_opened_connections_)/Config::kScheduleInterval) << "/s" << std::endl;
 	}
 
 	if ((worker_->status() == CLOSING) && site_comm_->AllClear()) {
@@ -35,7 +35,7 @@ void Schedule::Handle(ev::timer &watcher, int events_flags) {
 
 	if(cur_time > next_reap_peers_) {
 		worker_->ReapPeers();
-		next_reap_peers_ = cur_time + config_->kReapPeersInterval;
+		next_reap_peers_ = cur_time + Config::kReapPeersInterval;
 	}
 
 	counter_++;

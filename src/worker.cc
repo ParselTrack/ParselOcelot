@@ -21,8 +21,8 @@
 #include "logger.h"
 
 //---------- Worker - does stuff with input
-Worker::Worker(TorrentList &torrents, UserList &users, std::vector<std::string> &whitelist, Config *config, SiteComm *site_comm) :
-		torrents_list_(torrents), users_list_(users), whitelist_(whitelist), config_(config), site_comm_(site_comm) {
+Worker::Worker(TorrentList &torrents, UserList &users, std::vector<std::string> &whitelist, SiteComm *site_comm) :
+		torrents_list_(torrents), users_list_(users), whitelist_(whitelist), site_comm_(site_comm) {
 	status_ = OPEN;
 }
 
@@ -158,7 +158,7 @@ std::string Worker::Work(std::string &input, std::string &ip) {
 	
 	#ifdef ENABLE_UPDATE
 	if(action == UPDATE) {
-		if(passkey == config_->kSitePassword) {
+		if(passkey == Config::kSitePassword) {
 			return this->Update(params);
 		} else {
 			return this->Error("Authentication failure");
@@ -500,9 +500,9 @@ std::string Worker::Announce(Torrent &torrent, User &user, std::unordered_map<st
 	
 	std::string response = "d8:intervali";
 	response.reserve(350);
-	response += inttostr(config_->kAnnounceInterval+std::min((size_t)600, torrent.seeders.size())); // ensure a more even distribution of announces/second
+	response += inttostr(Config::kAnnounceInterval+std::min((size_t)600, torrent.seeders.size())); // ensure a more even distribution of announces/second
 	response += "e12:min intervali";
-	response += inttostr(config_->kAnnounceInterval);
+	response += inttostr(Config::kAnnounceInterval);
 	response += "e5:peers";
 	if(peers.length() == 0) {
 		response += "0:";
@@ -707,7 +707,7 @@ std::string Worker::Update(std::unordered_map<std::string, std::string> &params)
 		std::cout << "Edited whitelist item from " << old_peer_id << " to " << new_peer_id << std::endl;
 	} /*else if(params["action"] == "update_announce_interval") {
 		unsigned int interval = strtolong(params["new_announce_interval"]);
-		config_->kAnnounceInterval = interval;
+		Config::kAnnounceInterval = interval;
 		std::cout << "Edited announce interval to " << interval << std::endl;
 	}*/ else if(params["action"] == "info_torrent") {
 		std::string info_hash_hex = params["info_hash"];
@@ -740,7 +740,7 @@ void Worker::DoReapPeers() {
 		std::map<std::string, Peer>::iterator p = i->second.leechers.begin();
 		std::map<std::string, Peer>::iterator del_p;
 		while(p != i->second.leechers.end()) {
-			if(p->second.last_announced + config_->kPeersTimeout < cur_time) {
+			if(p->second.last_announced + Config::kPeersTimeout < cur_time) {
 				del_p = p;
 				p++;
 				boost::mutex::scoped_lock lock(site_comm_->torrent_list_mutex);
@@ -752,7 +752,7 @@ void Worker::DoReapPeers() {
 		}
 		p = i->second.seeders.begin();
 		while(p != i->second.seeders.end()) {
-			if(p->second.last_announced + config_->kPeersTimeout < cur_time) {
+			if(p->second.last_announced + Config::kPeersTimeout < cur_time) {
 				del_p = p;
 				p++;
 				boost::mutex::scoped_lock lock(site_comm_->torrent_list_mutex);

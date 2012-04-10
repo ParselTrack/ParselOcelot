@@ -25,15 +25,13 @@ int main() {
   #ifdef ENABLE_UPDATE
   std::cout << "WARNING: This version of ParselOcelot was compiled with UPDATE support enabled!" << std::endl;
   #endif // ENABLE_UPDATE
-
-  Config config;
   
   signal(SIGINT, sig_handler);
   signal(SIGTERM, sig_handler);
   
-  logger = new Logger(config.kLogFile);
+  logger = new Logger(Config::kLogFile);
   
-  SiteComm sc(config);
+  SiteComm sc;
   site_comm = &sc;
   
   Whitelist whitelist = site_comm->GetWhitelist();
@@ -52,10 +50,10 @@ int main() {
   site_comm->LoadTokens(torrents_list);
   
   // Create worker object, which handles announces and scrapes and all that jazz
-  worker = new Worker(torrents_list, users_list, whitelist, &config, site_comm);
+  worker = new Worker(torrents_list, users_list, whitelist, site_comm);
   
   // Create connection mother, which binds to its socket and handles the event stuff
-  mother = new ConnectionMother(worker, &config, site_comm);
+  mother = new ConnectionMother(worker, site_comm);
   
   return 0;
 }

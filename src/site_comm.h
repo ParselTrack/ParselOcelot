@@ -12,7 +12,7 @@
 
 class SiteComm {
 public:
-  SiteComm(const Config &conf);
+  SiteComm();
   ~SiteComm();
   Whitelist GetWhitelist();
   TorrentList GetTorrents();

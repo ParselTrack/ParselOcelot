@@ -25,8 +25,6 @@ public:
   static const constexpr char *kSitePassword = "********************************";
 
   static const constexpr char *kLogFile = "debug.log";
-
-  Config();
 };
 
 #endif // OCELOT_SRC_CONFIG_H

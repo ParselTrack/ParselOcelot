@@ -14,7 +14,7 @@
 
 //---------- Connection mother - spawns middlemen and lets them deal with the connection
 
-ConnectionMother::ConnectionMother(Worker *worker, Config *config, SiteComm *site_comm) : worker_(worker), config_(config), site_comm_(site_comm) {
+ConnectionMother::ConnectionMother(Worker *worker, SiteComm *site_comm) : worker_(worker), site_comm_(site_comm) {
 	open_connections_ = 0;
 	opened_connections_ = 0;
 	
@@ -39,7 +39,7 @@ ConnectionMother::ConnectionMother(Worker *worker, Config *config, SiteComm *sit
 	address_.sin_family = AF_INET;
 	//address.sin_addr.s_addr = inet_addr(conf->host.c_str()); // htonl(INADDR_ANY)
 	address_.sin_addr.s_addr = htonl(INADDR_ANY);
-	address_.sin_port = htons(config_->kPort);
+	address_.sin_port = htons(Config::kPort);
 	
 	// Bind
 	if(bind(listen_socket_, (sockaddr *) &address_, sizeof(address_)) == -1) {
@@ -47,7 +47,7 @@ ConnectionMother::ConnectionMother(Worker *worker, Config *config, SiteComm *sit
 	}
 	
 	// Listen
-	if(listen(listen_socket_, config->kMaxConnections) == -1) {
+	if(listen(listen_socket_, Config::kMaxConnections) == -1) {
 		std::cout << "Listen failed" << std::endl;
 	}
 	
@@ -61,10 +61,10 @@ ConnectionMother::ConnectionMother(Worker *worker, Config *config, SiteComm *sit
 	}
 	
 	// Create libev timer
-	Schedule timer(this, worker_, config, site_comm);
+	Schedule timer(this, worker_, site_comm);
 	
 	schedule_event_.set<Schedule, &Schedule::Handle>(&timer);
-	schedule_event_.set(config->kScheduleInterval, config->kScheduleInterval); // After interval, every interval
+	schedule_event_.set(Config::kScheduleInterval, Config::kScheduleInterval); // After interval, every interval
 	schedule_event_.start();
 	
 	std::cout << "Sockets up, starting event loop!" << std::endl;
@@ -74,9 +74,9 @@ ConnectionMother::ConnectionMother(Worker *worker, Config *config, SiteComm *sit
 
 void ConnectionMother::HandleConnect(ev::io &watcher, int events_flags) {
 	// Spawn a new middleman
-	if(open_connections_ < config_->kMaxMiddlemen) {
+	if(open_connections_ < Config::kMaxMiddlemen) {
 		opened_connections_++;
-		new ConnectionMiddleman(listen_socket_, address_, addr_len_, worker_, this, config_);
+		new ConnectionMiddleman(listen_socket_, address_, addr_len_, worker_, this);
 	}
 }
 
@@ -93,8 +93,8 @@ ConnectionMother::~ConnectionMother()
 
 //---------- Connection middlemen - these little guys live until their connection is closed
 
-ConnectionMiddleman::ConnectionMiddleman(int &listen_socket, sockaddr_in &address, socklen_t &addr_len, Worker *worker, ConnectionMother *mother, Config *config): 
-	config_(config), mother_(mother), worker_(worker) {
+ConnectionMiddleman::ConnectionMiddleman(int &listen_socket, sockaddr_in &address, socklen_t &addr_len, Worker *worker, ConnectionMother *mother): 
+	mother_(mother), worker_(worker) {
 	
 	connect_sock_ = accept(listen_socket, (sockaddr *) &address, &addr_len);
 	if(connect_sock_ == -1) {
@@ -124,7 +124,7 @@ ConnectionMiddleman::ConnectionMiddleman(int &listen_socket, sockaddr_in &addres
 	
 	// Let the socket timeout in timeout_interval seconds
 	timeout_event_.set<ConnectionMiddleman, &ConnectionMiddleman::HandleTimeout>(this);
-	timeout_event_.set(config->kTimeoutInterval, 0);
+	timeout_event_.set(Config::kTimeoutInterval, 0);
 	timeout_event_.start();
 	
 	mother->IncrementOpenConnections();
@@ -139,9 +139,9 @@ ConnectionMiddleman::~ConnectionMiddleman() {
 void ConnectionMiddleman::HandleRead(ev::io &watcher, int events_flags) {
 	read_event_.stop();
 	
-	char buffer[config_->kMaxReadBuffer + 1];
-	memset(buffer, 0, config_->kMaxReadBuffer + 1);
-	int status = recv(connect_sock_, &buffer, config_->kMaxReadBuffer, 0);
+	char buffer[Config::kMaxReadBuffer + 1];
+	memset(buffer, 0, Config::kMaxReadBuffer + 1);
+	int status = recv(connect_sock_, &buffer, Config::kMaxReadBuffer, 0);
 	
 	if(status == -1) {
 		delete this;

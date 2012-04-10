@@ -8,9 +8,8 @@
 
 using boost::asio::ip::tcp;
 
-SiteComm::SiteComm(const Config &config)
+SiteComm::SiteComm()
 {
-  config_ = config;
 }
 
 SiteComm::~SiteComm()

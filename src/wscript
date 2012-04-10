@@ -36,8 +36,8 @@ def build(ctx):
         DEFINES.append('ENABLE_UPDATE')
 
     ctx.stlib(
-        source       = 'config.cc events.cc logger.cc misc_functions.cc' +
-            ' schedule.cc site_comm.cc worker.cc',
+        source       = 'events.cc logger.cc misc_functions.cc schedule.cc' +
+            ' site_comm.cc worker.cc',
         target       = 'ocelotcore',
         features     = [],
 

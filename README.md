@@ -12,8 +12,7 @@ See https://github.com/ParselTrack/Specifications for the latest version of the 
 ~$ sudo apt-get install libboost-system-dev libboost-thread-dev libev-dev
 ~$ git clone git://github.com/ParselTrack/ParselOcelot.git $OCELOT_SRC_DIR
 ~$ cd $OCELOT_SRC_DIR
-~$ cp src/config.cc.template src/config.cc
-~$ editor src/config.cc
+~$ editor src/config.h
 ~$ ./waf configure
 ~$ ./waf
 ~$ cp build/src/ocelot $OCELOT_INSTALL_DIR
