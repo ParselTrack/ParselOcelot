@@ -4,3 +4,14 @@ This is a fork of the What.CD tracker Ocelot to rewrite it to use a proper Track
 
 See https://github.com/ParselTrack/Specifications for the latest version of the API spec.
 
+##### Installation
+
+```
+~$ export OCELOT_SRC_DIR="/opt/ParselOcelot"
+~$ export OCELOT_INSTALL_DIR="/usr/bin"
+~$ git clone git://github.com/ParselTrack/ParselOcelot.git $OCELOT_SRC_DIR
+~$ cd $OCELOT_SRC_DIR
+~$ ./waf
+~$ cp build/src/ocelot $OCELOT_INSTALL_DIR
+~$ cd -
+```
