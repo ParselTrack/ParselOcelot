@@ -1,32 +1,64 @@
 def build(ctx):
-    ADDITIONAL_DEFINES = []
+    DEFINES = []
+
+    CXXFLAGS = [
+        '-march=native',
+        '-O2',
+        '-fomit-frame-pointer',
+        '-fno-ident',
+        '-fvisibility-inlines-hidden',
+        '-fvisibility=hidden',
+        '-flto',
+        '-Wall',
+        '-Werror',
+        '-std=c++0x',
+        '-iquote',
+        '-Wl,O1',
+        '-Wl,--as-needed',
+    ]
+
+    DBGFLAGS = [
+        '-g',
+    ]
+
+    LIBS = [
+        'ev',
+        'boost_system',
+        'boost_thread',
+    ]
+
+    INCLUDE_DIRS = [
+        '.',
+        '/usr/local/include/boost',
+    ]
 
     if ctx.env.ENABLE_UPDATE:
-        ADDITIONAL_DEFINES.append('ENABLE_UPDATE')
+        DEFINES.append('ENABLE_UPDATE')
+
+    ctx.stlib(
+        source       = 'config.cc events.cc logger.cc misc_functions.cc' +
+            ' schedule.cc site_comm.cc worker.cc',
+        target       = 'ocelotcore',
+        features     = [],
+
+        includes     = INCLUDE_DIRS,
+        defines      = DEFINES,
+
+        lib          = LIBS,
+        cxxflags     = CXXFLAGS,
+        dflags       = DBGFLAGS,
+    )
 
     ctx.program(
-        source       = 'config.cc events.cc logger.cc misc_functions.cc' +
-            ' ocelot.cc schedule.cc site_comm.cc worker.cc',
+        source       = 'ocelot.cc',
         target       = 'ocelot',
         features     = [],
 
-        includes     = ['.', '/usr/local/include/boost'],
-        defines      = [] + ADDITIONAL_DEFINES,
+        includes     = INCLUDE_DIRS,
+        defines      = DEFINES,
 
-        lib          = ['ev', 'boost_system', 'boost_thread'],
-        cxxflags       = [
-            '-march=native',
-            '-O2',
-            '-fomit-frame-pointer',
-            '-fno-ident',
-            '-fvisibility-inlines-hidden',
-            '-fvisibility=hidden',
-            '-Wall',
-            '-Werror',
-            '-std=c++0x',
-            '-iquote',
-            '-Wl,O1',
-            '-Wl,--as-needed',
-        ],
-        dflags       = ['-g'],
+        lib          = LIBS,
+        use          = ['ocelotcore'],
+        cxxflags     = CXXFLAGS,
+        dflags       = DBGFLAGS,
     )
