@@ -1,5 +1,4 @@
 def build(ctx):
-    print(ctx.env)
     ADDITIONAL_DEFINES = []
 
     if ctx.env.ENABLE_UPDATE:
