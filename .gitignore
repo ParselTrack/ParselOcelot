@@ -1,0 +1,5 @@
+build/
+*~
+*.log
+src/config.cc
+.lock*
