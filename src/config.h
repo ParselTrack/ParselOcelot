@@ -2,6 +2,7 @@
 #define OCELOT_SRC_CONFIG_H
 
 #include <string>
+#include <vector>
 
 class Config {
 public:
@@ -27,6 +28,10 @@ public:
   std::string kSitePassword;
 
   std::string kLogFile;
+
+  // For reverse proxy support
+  bool kAllowReverseProxies;
+  std::vector<std::string> kTrustedProxyIps;
 };
 
 #endif // OCELOT_SRC_CONFIG_H

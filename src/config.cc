@@ -19,23 +19,25 @@ Config::Config(int argc, char **argv)
 {
   po::options_description desc("Allowed options");
   desc.add_options()
-    ("help",                                              "produce help message")
-    ("host",                po::value<std::string>(),          "set listen host")
-    ("port",                po::value<unsigned int>(),         "set listen port")
-    ("max-connections",     po::value<unsigned int>(), "set maximum connections")
-    ("max-read-buffer",     po::value<unsigned int>(), "set maximum read buffer")
-    ("timeout-interval",    po::value<unsigned int>(),    "set timeout interval")
-    ("schedule-interval",   po::value<unsigned int>(),   "set schedule interval")
-    ("max-middlemen",       po::value<unsigned int>(),   "set maxmium middlemen")
-    ("announce-interval",   po::value<unsigned int>(),   "set announce interval")
-    ("peers-timeout",       po::value<int>(),                "set peers timeout")
-    ("reap-peers-interval", po::value<unsigned int>(), "set reap peers interval")
-    ("site-host",           po::value<std::string>(),            "set site host")
-    ("site-port",           po::value<int>(),                    "set site port")
+    ("help,h",                                                              "produce help message")
+    ("host,n",                  po::value<std::string>(),                        "set listen host")
+    ("port,p",                  po::value<unsigned int>(),                       "set listen port")
+    ("max-connections,c",       po::value<unsigned int>(),               "set maximum connections")
+    ("max-read-buffer,b",       po::value<unsigned int>(),               "set maximum read buffer")
+    ("timeout-interval,t",      po::value<unsigned int>(),                  "set timeout interval")
+    ("schedule-interval,s",     po::value<unsigned int>(),                 "set schedule interval")
+    ("max-middlemen,m",         po::value<unsigned int>(),                 "set maxmium middlemen")
+    ("announce-interval,a",     po::value<unsigned int>(),                 "set announce interval")
+    ("peers-timeout,e",         po::value<int>(),                              "set peers timeout")
+    ("reap-peers-interval,r",   po::value<unsigned int>(),               "set reap peers interval")
+    ("site-host,s",             po::value<std::string>(),                          "set site host")
+    ("site-port,d",             po::value<int>(),                                  "set site port")
     #if ENABLE_UPDATE
-    ("site-password",       po::value<std::string>(),        "set site password")
+    ("site-password,w",         po::value<std::string>(),                      "set site password")
     #endif // ENABLE_UPDATE
-    ("log-file",            po::value<std::string>(),             "set log file")
+    ("log-file,l",              po::value<std::string>(),                           "set log file")
+    ("allow-reverse-proxies,x",                                        "set allow reverse proxies")
+    ("trust-proxy-ip,z",        po::value<std::vector<std::string> >(), "trust IP's proxy headers")
   ;
 
   po::variables_map vm;
@@ -105,4 +107,12 @@ Config::Config(int argc, char **argv)
   (vm.count("log-file"))?
     kLogFile = vm["log-file"].as<std::string>() :
     kLogFile = "debug.log";
+
+  (vm.count("allow-reverse-proxies"))?
+    kAllowReverseProxies = true :
+    kAllowReverseProxies = false;
+
+  (vm.count("trust-proxy-ip"))?
+    kTrustedProxyIps = vm["trust-proxy-ip"].as<std::vector<std::string> >() :
+    kTrustedProxyIps = std::vector<std::string>();
 }

@@ -38,8 +38,9 @@ bool Worker::Signal(int sig) {
 		return false;
 	}
 }
-std::string Worker::Work(std::string &input, std::string &ip) {
+std::string Worker::Work(std::string &input, std::string &clientip) {
 	unsigned int input_length = input.length();
+	std::string ip = clientip;
 	
 	//---------- Parse request - ugly but fast. Using substr exploded.
 	if(input_length < 60) { // Way too short to be anything useful
@@ -154,7 +155,35 @@ std::string Worker::Work(std::string &input, std::string &ip) {
 			}
 		}
 	}
-	
+
+	// Deal with X-Real-IP/X-Forwarded-For
+	if (config_->kAllowReverseProxies) {
+		bool allowed = false;
+
+		// Check if the clientip is an allowed reverse proxy
+		for (auto itr = config_->kTrustedProxyIps.begin();
+				 itr != config_->kTrustedProxyIps.end(); ++itr) {
+			if (*itr == clientip) {
+				allowed = true;
+				break;
+			}
+		}
+
+		// From a trusted reverse proxy
+		if (allowed) {
+			auto ip_itr = headers.find("x-real-ip");
+
+			if (ip_itr != headers.end()) {
+				ip = ip_itr->second;
+			} else {
+				ip_itr = headers.find("x-forwarded-for");
+
+				if (ip_itr != headers.end()) {
+					ip = ip_itr->second;
+				}
+			}
+		}
+	}
 	
 	#ifdef ENABLE_UPDATE
 	if(action == UPDATE) {
