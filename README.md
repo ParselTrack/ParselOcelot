@@ -1,7 +1,5 @@
 ### ParselOcelot
 
-[![Build Status](https://secure.travis-ci.org/ParselTrack/ParselOcelot.png)](http://travis-ci.org/ParselTrack/ParselOcelot)
-
 This is a fork of the What.CD tracker Ocelot to rewrite it to use a proper Tracker <-> Frontend communications API. This is an example implementation of the appropriate use of the API, which this project intends to publish as an open standard.
 
 See https://github.com/ParselTrack/Specifications for the latest version of the API spec.
