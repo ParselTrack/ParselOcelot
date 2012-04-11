@@ -25,6 +25,7 @@ def build(ctx):
         'ev',
         'boost_system',
         'boost_thread',
+        'boost_program_options',
     ]
 
     INCLUDE_DIRS = [
@@ -36,8 +37,8 @@ def build(ctx):
         DEFINES.append('ENABLE_UPDATE')
 
     ctx.stlib(
-        source       = 'events.cc logger.cc misc_functions.cc schedule.cc' +
-            ' site_comm.cc worker.cc',
+        source       = 'config.cc events.cc logger.cc misc_functions.cc' +
+            ' schedule.cc site_comm.cc worker.cc',
         target       = 'ocelotcore',
         features     = [],
 

@@ -10,6 +10,7 @@ static ConnectionMother *mother;
 static Worker *worker;
 static Logger *logger;
 static SiteComm *site_comm;
+static Config *config;
 
 static void sig_handler(int sig)
 {
@@ -21,7 +22,10 @@ static void sig_handler(int sig)
   }
 }
 
-int main() {
+int main(int argc, char **argv) {
+  Config cfg(argc, argv);
+  config = &cfg;
+
   #ifdef ENABLE_UPDATE
   std::cout << "WARNING: This version of ParselOcelot was compiled with UPDATE support enabled!" << std::endl;
   #endif // ENABLE_UPDATE
@@ -29,9 +33,9 @@ int main() {
   signal(SIGINT, sig_handler);
   signal(SIGTERM, sig_handler);
   
-  logger = new Logger(Config::kLogFile);
+  logger = new Logger(config->kLogFile);
   
-  SiteComm sc;
+  SiteComm sc(config);
   site_comm = &sc;
   
   Whitelist whitelist = site_comm->GetWhitelist();
@@ -50,10 +54,10 @@ int main() {
   site_comm->LoadTokens(torrents_list);
   
   // Create worker object, which handles announces and scrapes and all that jazz
-  worker = new Worker(torrents_list, users_list, whitelist, site_comm);
+  worker = new Worker(torrents_list, users_list, whitelist, site_comm, config);
   
   // Create connection mother, which binds to its socket and handles the event stuff
-  mother = new ConnectionMother(worker, site_comm);
+  mother = new ConnectionMother(worker, site_comm, config);
   
   return 0;
 }

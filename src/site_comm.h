@@ -12,7 +12,7 @@
 
 class SiteComm {
 public:
-  SiteComm();
+  SiteComm(Config *config);
   ~SiteComm();
   Whitelist GetWhitelist();
   TorrentList GetTorrents();
@@ -32,7 +32,7 @@ public:
   boost::mutex torrent_list_mutex;
 
 private:
-  Config config_;
+  Config *config_;
 };
 
 #endif // OCELOT_SRC_SITE_COMM_H

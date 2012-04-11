@@ -15,7 +15,7 @@ enum TrackerStatus { OPEN, PAUSED, CLOSING }; // tracker status
 
 class Worker {
   public:
-    Worker(TorrentList &torrents, UserList &users, std::vector<std::string> &whitelist, SiteComm *site_comm);
+    Worker(TorrentList &torrents, UserList &users, std::vector<std::string> &whitelist, SiteComm *site_comm, Config *config);
     std::string Work(std::string &input, std::string &ip);
     std::string Error(std::string err);
     std::string Announce(Torrent &torrent, User &user, std::unordered_map<std::string, std::string> &params, std::unordered_map<std::string, std::string> &headers, std::string &ip);
@@ -38,6 +38,7 @@ class Worker {
     std::vector<std::string> whitelist_;
     TrackerStatus status_;
     SiteComm *site_comm_;
+    Config *config_;
 };
 
 #endif // OCELOT_SRC_WORKER_H

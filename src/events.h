@@ -39,7 +39,7 @@ THE WORKER
 // THE MOTHER - Spawns connection middlemen
 class ConnectionMother {
   public: 
-    ConnectionMother(Worker *worker, SiteComm *site_comm);
+    ConnectionMother(Worker *worker, SiteComm *site_comm, Config *config);
     ~ConnectionMother();
     
     void IncrementOpenConnections() { open_connections_++; }
@@ -55,8 +55,8 @@ class ConnectionMother {
     sockaddr_in address_;
     socklen_t addr_len_;
     Worker *worker_;
-    Config *config_;
     SiteComm *site_comm_;
+    Config *config_;
     ev::timer schedule_event_;
     
     unsigned long opened_connections_;
@@ -68,7 +68,7 @@ class ConnectionMother {
 // Add their own watchers to see when sockets become readable
 class ConnectionMiddleman {
   public:
-    ConnectionMiddleman(int &listen_socket, sockaddr_in &address, socklen_t &addr_len, Worker *worker, ConnectionMother *mother);
+    ConnectionMiddleman(int &listen_socket, sockaddr_in &address, socklen_t &addr_len, Worker *worker, ConnectionMother *mother, Config *config);
     ~ConnectionMiddleman();
   
     void HandleRead(ev::io &watcher, int events_flags);
@@ -84,6 +84,7 @@ class ConnectionMiddleman {
     
     ConnectionMother *mother_;
     Worker *worker_;
+    Config *config_;
     sockaddr_in client_addr_;
 };
 
