@@ -1,6 +1,7 @@
 #ifndef OCELOT_SRC_SCHEDULE_H
 #define OCELOT_SRC_SCHEDULE_H
 
+#undef EV_ERROR
 #include <ev++.h>
 #include <string>
 #include <iostream>

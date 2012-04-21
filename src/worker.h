@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <list>
-#include <unordered_map>
+#include <boost/unordered_map.hpp>
 #include <iostream>
 #include <fstream>
 #include "site_comm.h"
@@ -18,10 +18,10 @@ class Worker {
     Worker(TorrentList &torrents, UserList &users, std::vector<std::string> &whitelist, SiteComm *site_comm, Config *config);
     std::string Work(std::string &input, std::string &ip);
     std::string Error(std::string err);
-    std::string Announce(Torrent &torrent, User &user, std::unordered_map<std::string, std::string> &params, std::unordered_map<std::string, std::string> &headers, std::string &ip);
+    std::string Announce(Torrent &torrent, User &user, boost::unordered_map<std::string, std::string> &params, boost::unordered_map<std::string, std::string> &headers, std::string &ip);
     std::string Scrape(const std::list<std::string> &infohashes);
     #ifdef ENABLE_UPDATE
-    std::string Update(std::unordered_map<std::string, std::string> &params);
+    std::string Update(boost::unordered_map<std::string, std::string> &params);
     #endif // ENABLE_UPDATE
 
     bool Signal(int sig);

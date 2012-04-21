@@ -14,6 +14,7 @@ class SiteComm {
 public:
   SiteComm(Config *config);
   ~SiteComm();
+  void Init();
   Whitelist GetWhitelist();
   TorrentList GetTorrents();
   UserList GetUsers();

@@ -16,6 +16,10 @@ SiteComm::~SiteComm()
 {
 }
 
+void SiteComm::Init()
+{
+}
+
 Whitelist SiteComm::GetWhitelist()
 {
   return Whitelist();

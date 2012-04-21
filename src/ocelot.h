@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include <unordered_map>
+#include <boost/unordered_map.hpp>
 #include <set>
 #include <boost/thread/thread.hpp>
 
@@ -46,8 +46,8 @@ typedef struct {
 } User;
 
 
-typedef std::unordered_map<std::string, Torrent> TorrentList;
-typedef std::unordered_map<std::string, User> UserList;
+typedef boost::unordered_map<std::string, Torrent> TorrentList;
+typedef boost::unordered_map<std::string, User> UserList;
 typedef std::vector<std::string> Whitelist;
 
 #endif // OCELOT_SRC_OCELOT_H

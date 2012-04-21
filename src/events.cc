@@ -169,7 +169,11 @@ void ConnectionMiddleman::HandleWrite(ev::io &watcher, int events_flags) {
 	timeout_event_.stop();
 	std::string http_response = "HTTP/1.1 200\r\nServer: Ocelot 1.0\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\n";
 	http_response += response_;
+#if defined(__APPLE__)
+	send(connect_sock_, http_response.c_str(), http_response.size(), SO_NOSIGPIPE);
+#else
 	send(connect_sock_, http_response.c_str(), http_response.size(), MSG_NOSIGNAL);
+#endif
 	delete this;
 }
 

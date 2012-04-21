@@ -5,7 +5,6 @@ def build(ctx):
         '-march=native',
         '-O2',
         '-fomit-frame-pointer',
-        '-fno-ident',
         '-fvisibility-inlines-hidden',
         '-fvisibility=hidden',
         '-flto',
@@ -13,8 +12,12 @@ def build(ctx):
         '-Werror',
         '-std=c++0x',
         '-iquote',
+    ]
+
+    LDFLAGS = [
         '-Wl,O1',
         '-Wl,--as-needed',
+        '-L/usr/local/lib',
     ]
 
     DBGFLAGS = [
@@ -23,9 +26,9 @@ def build(ctx):
 
     LIBS = [
         'ev',
-        'boost_system',
-        'boost_thread',
-        'boost_program_options',
+        'boost_system-mt',
+        'boost_thread-mt',
+        'boost_program_options-mt',
     ]
 
     INCLUDE_DIRS = [
@@ -47,6 +50,7 @@ def build(ctx):
 
         lib          = LIBS,
         cxxflags     = CXXFLAGS,
+        ldflags      = LDFLAGS,
         dflags       = DBGFLAGS,
     )
 
@@ -61,5 +65,6 @@ def build(ctx):
         lib          = LIBS,
         use          = ['ocelotcore'],
         cxxflags     = CXXFLAGS,
+        ldflags      = LDFLAGS,
         dflags       = DBGFLAGS,
     )

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#undef EV_ERROR
 #include <ev++.h>
 #include "site_comm.h"
 #include "worker.h"

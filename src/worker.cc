@@ -95,7 +95,7 @@ std::string Worker::Work(std::string &input, std::string &clientip) {
 	// Parse URL params
 	std::list<std::string> infohashes; // For scrape only
 	
-	std::unordered_map<std::string, std::string> params;
+	boost::unordered_map<std::string, std::string> params;
 	std::string key;
 	std::string value;
 	bool parsing_key = true; // true = key, false = value
@@ -128,7 +128,7 @@ std::string Worker::Work(std::string &input, std::string &clientip) {
 	pos += 10; // skip HTTP/1.1 - should probably be +=11, but just in case a client doesn't send \r
 	
 	// Parse headers
-	std::unordered_map<std::string, std::string> headers;
+	boost::unordered_map<std::string, std::string> headers;
 	parsing_key = true;
 	bool found_data = false;
 	
@@ -226,7 +226,7 @@ std::string Worker::Error(std::string err) {
 	return output;
 }
 
-std::string Worker::Announce(Torrent &torrent, User &user, std::unordered_map<std::string, std::string> &params, std::unordered_map<std::string, std::string> &headers, std::string &ip) {
+std::string Worker::Announce(Torrent &torrent, User &user, boost::unordered_map<std::string, std::string> &params, boost::unordered_map<std::string, std::string> &headers, std::string &ip) {
 	time_t cur_time = time(NULL);
 	
 	if(params["compact"] != "1") {
@@ -241,7 +241,7 @@ std::string Worker::Announce(Torrent &torrent, User &user, std::unordered_map<st
 	bool update_torrent = false; // Whether or not we should update the torrent in the DB
 	bool expire_token = false; // Whether or not to expire a token after torrent completion
 	
-	std::unordered_map<std::string, std::string>::const_iterator peer_id_iterator = params.find("peer_id");
+	auto peer_id_iterator = params.find("peer_id");
 	if(peer_id_iterator == params.end()) {
 		return this->Error("no peer id");
 	}
@@ -367,7 +367,7 @@ std::string Worker::Announce(Torrent &torrent, User &user, std::unordered_map<st
 	}
 	p->last_announced = cur_time;
 	
-	std::unordered_map<std::string, std::string>::const_iterator param_ip = params.find("ip");
+	auto param_ip = params.find("ip");
 	if(param_ip != params.end()) {
 		ip = param_ip->second;
 	} else {
@@ -404,7 +404,7 @@ std::string Worker::Announce(Torrent &torrent, User &user, std::unordered_map<st
 	
 	// Select peers!
 	unsigned int numwant;
-	std::unordered_map<std::string, std::string>::const_iterator param_numwant = params.find("numwant");
+	auto param_numwant = params.find("numwant");
 	if(param_numwant == params.end()) {
 		numwant = 50;
 	} else {
@@ -581,7 +581,7 @@ std::string Worker::Scrape(const std::list<std::string> &infohashes) {
 #ifdef ENABLE_UPDATE
 
 //TODO: Restrict to local IPs
-std::string Worker::Update(std::unordered_map<std::string, std::string> &params) {
+std::string Worker::Update(boost::unordered_map<std::string, std::string> &params) {
 	if(params["action"] == "change_passkey") {
 		std::string oldpasskey = params["oldpasskey"];
 		std::string newpasskey = params["newpasskey"];
@@ -764,7 +764,7 @@ void Worker::DoReapPeers() {
 	Logger::instance()->Log("Began Worker::DoReapPeers()");
 	time_t cur_time = time(NULL);
 	unsigned int reaped = 0;
-	std::unordered_map<std::string, Torrent>::iterator i = torrents_list_.begin();
+	auto i = torrents_list_.begin();
 	for(; i != torrents_list_.end(); i++) {
 		std::map<std::string, Peer>::iterator p = i->second.leechers.begin();
 		std::map<std::string, Peer>::iterator del_p;

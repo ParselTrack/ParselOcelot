@@ -37,6 +37,8 @@ int main(int argc, char **argv) {
   
   SiteComm sc(config);
   site_comm = &sc;
+
+  site_comm->Init();
   
   Whitelist whitelist = site_comm->GetWhitelist();
   std::cout << "Loaded " << whitelist.size() << " clients into the whitelist" << std::endl;
